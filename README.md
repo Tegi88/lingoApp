@@ -1,36 +1,80 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# LingoMaster 🌍
 
-## Getting Started
+Full-stack personalized language learning application built with Next.js 16, Supabase, and Claude AI.
 
-First, run the development server:
+## Features
+
+- **Onboarding** — choose native language and target language (6 languages supported)
+- **i18n UI** — entire interface adapts to your native language (EN/HE/ES/FR)
+- **Vocabulary Hub** — categorized word cards with Text-to-Speech (Web Speech API), status tracking (New / Learning / Known), search and filter
+- **Video Learning** — embedded YouTube videos (no redirect), organized by category and difficulty
+- **AI Tutor Chat** — conversation partner powered by Claude (Anthropic API)
+- **Flashcard Game** — flip cards to practice word/translation recall with scoring
+- **Sentence Builder Game** — drag words into correct sentence order
+- **Progress Dashboard** — stats, study streak, quick navigation
+
+## Setup
+
+### 1. Environment variables
+
+Copy `.env.local.example` to `.env.local` and fill in:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cp .env.local.example .env.local
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+ANTHROPIC_API_KEY=your_anthropic_api_key
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 2. Database (Supabase)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run the SQL in `supabase/schema.sql` in your Supabase project's SQL Editor. This creates all tables and seeds vocabulary + video data.
 
-## Learn More
+### 3. Run
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm install
+npm run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Open `http://localhost:3002` (or whichever port is free).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+src/
+  app/
+    (dashboard)/        # Protected routes (layout guards onboarding)
+      dashboard/        # Progress overview
+      vocabulary/       # Word cards with TTS
+      videos/           # Embedded video player
+      chat/             # AI Tutor chat
+      games/            # Flashcards + Sentence Builder
+    api/chat/           # Anthropic API route
+    page.tsx            # Onboarding (language selector)
+  components/
+    Sidebar.tsx         # Desktop navigation
+    MobileNav.tsx       # Mobile top navigation
+  context/
+    LanguageContext.tsx  # i18n + language state
+    ProgressContext.tsx  # Word/video progress (localStorage)
+  lib/
+    utils.ts            # TTS, translations, categories
+    supabase.ts         # Supabase client
+    vocabulary-data.ts  # Built-in word data (ES/FR/DE)
+    video-data.ts       # Built-in video data
+  types/index.ts        # TypeScript interfaces
+supabase/schema.sql     # Database schema + seed data
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Tech Stack
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Next.js 16** (App Router, TypeScript)
+- **Tailwind CSS v4**
+- **Supabase** (auth + database)
+- **Anthropic Claude** (AI Tutor)
+- **Web Speech API** (Text-to-Speech)
+- **YouTube Embed** (no-cookie player)
